@@ -1,6 +1,7 @@
 #include "pool.hpp"
 #include "http.hpp"
 #include "logger.hpp"
+#include "server.hpp"
 
 using namespace logger;
 
@@ -13,8 +14,8 @@ int main() {
 	// Log(WARN) << "test";
 	// Log(ERROR) << "test";
 
-	http::Method m;
-	http::Server server;
+	// http::Method m;
+	core::Server server;
 
 	server.set_port(8888);
 	server.start();

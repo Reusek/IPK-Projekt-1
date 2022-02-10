@@ -17,11 +17,11 @@ core::Server::~Server() {
 }
 
 void core::Server::handle(
-	core::Server::buf_t &rx_buf,
-	core::Server::buf_t &tx_buf
+	core::buf_t &rx_buf,
+	core::buf_t &tx_buf
 ) {
 	Log(DEBUG) << "Start parsing method";
-	Method::Type method = parse_method(rx_buf);
+	http::Method::Type method = http_manager.parse_method(rx_buf);
 	if (method == http::Method::METHOD_ERROR) {
 		Log(ERROR) << "Bad core method";
 		return;
@@ -29,7 +29,7 @@ void core::Server::handle(
 	Log(DEBUG) << "Done parsing method " << method;
 
 	Log(DEBUG) << "Start parsing url";
-	std::string url = parse_url(rx_buf);
+	std::string url = http_manager.parse_url(rx_buf);
 	if (url.length() < 1) {
 		Log(ERROR) << "Bad url";
 		return;
@@ -37,13 +37,14 @@ void core::Server::handle(
 	Log(DEBUG) << "Done parsing url " << url;
 
 	Log(DEBUG) << "Start parsing version";
-	core::Version::Type version = parse_version(rx_buf);
-	if (version == core::Version::Type::VERSION_ERROR) {
+	http::Version::Type version = http_manager.parse_version(rx_buf);
+	if (version == http::Version::Type::VERSION_ERROR) {
 		Log(ERROR) << "Bad version";
 		return;
 	}
 	Log(DEBUG) << "Done parsing version " << version;
 
+	// TODO: Remove this after implementation.
 	(void)(tx_buf);
 	(void)(method);
 }

@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <deque>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 
 #include "logger.hpp"
 

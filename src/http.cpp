@@ -44,37 +44,28 @@ http::Version::Type http::Version::from_string(std::string &version) {
 }
 
 
-
-
-
-http::Method::Type http::Server::parse_method(
-	http::Server::buf_t &rx_buf
+http::Method::Type http::Http::parse_method(
+	core::buf_t &rx_buf
 ) {
 	char c = rx_buf.pop();
 	std::string b;
 
-	// Log(DEBUG) << "Got character " << c;
-
 	while (c != ' ' || b.length() >= method_manager.max_len) {
 		b.push_back(c);
-		// Log(DEBUG) << "Got character " << c;
 		c = rx_buf.pop();
 	}
 
 	return method_manager.from_string(b);
 }
 
-std::string http::Server::parse_url(
-	http::Server::buf_t &rx_buf
+std::string http::Http::parse_url(
+	core::buf_t &rx_buf
 ) {
 	char c = rx_buf.pop();
 	std::string b;
 
-	// Log(DEBUG) << "Got character " << c;
-
 	while (c != ' ' || b.length() >= url_manager.max_len) {
 		b.push_back(c);
-		// Log(DEBUG) << "Got character " << c;
 		c = rx_buf.pop();
 	}
 
@@ -85,17 +76,18 @@ std::string http::Server::parse_url(
 	return b;
 }
 
-http::Version::Type http::Server::parse_version(
-	http::Server::buf_t &rx_buf
+http::Version::Type http::Http::parse_version(
+	core::buf_t &rx_buf
 ) {
 	char c = rx_buf.pop();
 	std::string b;
 
-	// Log(DEBUG) << "Got character " << c;
-
-	while (c != '\n' ||  b.length() >= url_manager.max_len) {
+	while (
+		c != '\n' ||
+		c != ' ' ||
+		b.length() >= url_manager.max_len
+	) {
 		b.push_back(c);
-		// Log(DEBUG) << "Got character " << c;
 		c = rx_buf.pop();
 	}
 

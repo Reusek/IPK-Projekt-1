@@ -18,14 +18,18 @@ namespace core {
 	private:
 		uint16_t port;
 
-		// http::Http http_manager;
+		http::Http http_manager;
 
-		// Method method_manager;
-		// Url url_manager;
-		// Version version_manager;
-		// Socket* socket;
-
-		void handle(core::buf_t rx_buf, core::buf_t tx_buf);
+		/**
+		 * @brief Handle client connection
+		 *
+		 * @param rx_buf Receaving buffer
+		 * @param tx_buf Transmitting buffer
+		 */
+		void handle(
+			core::buf_t rx_buf,
+			core::buf_t tx_buf
+		);
 	};
 }
 

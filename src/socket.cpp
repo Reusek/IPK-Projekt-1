@@ -99,7 +99,7 @@ void core::Connection::rx(buffer::Buffer<char>& buf) {
 		/// rcv_msg.append(buffer, read_size);
 		Log(DEBUG) << "Receaved size: " << read_size;
 		std::vector<char> chunk(std::begin(buffer), std::begin(buffer) + read_size);
-		// std::cout << buffer << std::endl;
+		std::cout << buffer << std::endl;
 		buf.push_chunk(chunk);
 	}
 

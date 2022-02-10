@@ -1,5 +1,21 @@
 # IPK-Projekt-1
 
+Projekt je implementuje jednoduchý http server pro platformu linux s využitím std a systémových knihoven.
+
+Jedná se o mini framework. Je možné rozšíření o celou podporu http protokolu.
+
+## Implementace
+
+### Multi-threading
+
+V projektu je využito "threadů". Pro lepší práci je implemntován tzv [thread pool](https://en.wikipedia.org/wiki/Thread_pool).
+
+### Komunikace
+
+## Použití
+
+TODO
+
 ## Build
 
 ```Bash

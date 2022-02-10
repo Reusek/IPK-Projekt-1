@@ -1,5 +1,5 @@
-#ifndef __SOCKET_HPP__
-#define __SOCKET_HPP__
+#ifndef __HTTP_HPP__
+#define __HTTP_HPP__
 
 #include <iostream>
 #include <unistd.h>
@@ -17,10 +17,7 @@
 #include "buffer.hpp"
 #include "socket.hpp"
 
-#include "logger.hpp"
-
 namespace http {
-
 	size_t longest(std::vector<std::string> a);
 
 	class Method {
@@ -145,7 +142,6 @@ namespace http {
 	};
 
 	class Request {
-
 	};
 
 	class Response {
@@ -157,6 +153,10 @@ namespace http {
 		Method::Type parse_method(core::buf_t rx_buf);
 		std::string parse_url(core::buf_t rx_buf);
 		Version::Type parse_version(core::buf_t rx_buf);
+	private:
+		http::Method method_manager;
+		http::Url url_manager;
+		http::Version version_manager;
 	};
 }
 
