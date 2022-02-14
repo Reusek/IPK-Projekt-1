@@ -1,13 +1,12 @@
 #include "socket.hpp"
 
-core::Socket::Socket(handle_function_t fn) {
-	pool = new pool::Pool<int>();
+core::Socket::Socket(handle_function_t fn) :
+	pool(std::make_unique<pool::Pool<int>>()),
+	handle_fn(fn)
+{
 	handle_fn = fn;
 }
 
-core::Socket::~Socket() {
-	delete pool;
-}
 
 void core::Socket::init() {
 	// TODO: Rework this to modern way!

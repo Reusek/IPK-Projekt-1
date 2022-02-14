@@ -44,13 +44,14 @@ namespace core {
 	public:
 		using handle_function_t = std::function<void(buf_t, buf_t)>;
 		Socket(handle_function_t handle_function);
-		~Socket();
+		// ~Socket() = default;
 
 		void start();
 	private:
 		int socket_desc, new_socket;
 		struct sockaddr_in server, client;
-		pool::Pool<int> *pool;
+		// pool::Pool<int> *pool;
+		std::unique_ptr<pool::Pool<int>> pool;
 		handle_function_t handle_fn;
 
 		void init();
