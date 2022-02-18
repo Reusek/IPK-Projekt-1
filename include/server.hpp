@@ -1,16 +1,20 @@
 #ifndef __SERVER_HPP__
 #define __SERVER_HPP__
 
+#include <unordered_map>
+#include <functional>
+
 #include "buffer.hpp"
 #include "socket.hpp"
 #include "http.hpp"
 
 namespace core {
+	// TODO: Pass cached data to endpoint function.
+	using endpoint_fn = std::function<http::Response(http::Request)>;
+
 	class Server {
 	public:
-		Server() = default;
-		~Server();
-
+		void add_endpoint(std::string route, endpoint_fn endpoint);
 
 		void set_port(uint16_t p);
 
@@ -19,6 +23,8 @@ namespace core {
 		uint16_t port;
 
 		http::Http http_manager;
+
+		std::unordered_map<std::string, endpoint_fn> endpoints;
 
 		/**
 		 * @brief Handle client connection

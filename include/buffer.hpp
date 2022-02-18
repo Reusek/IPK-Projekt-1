@@ -57,6 +57,20 @@ namespace buffer {
 		size_t size() {
 			return deque.size();
 		}
+
+		T peak() {
+			T item;
+			{
+				std::unique_lock<std::mutex> lock(deque_mutex);
+
+				condition.wait(lock, [this]() {
+					return !deque.empty() || terminate;
+				});
+
+				item = deque.front();
+			}
+			return item;
+		}
 		/* void push_chunk(T* chunk, int len) {
 			std::unique_lock<std::mutex> lock(deque_mutex);
 			deque.insert(deque.end(), chunk, chunk + len);

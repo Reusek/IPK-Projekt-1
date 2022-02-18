@@ -23,8 +23,8 @@ void core::Socket::init() {
 	server.sin_port = htons(8888);
 
 	if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0) {
-		// std::cout << "Could not bind port 8888" << std::endl;
 		Log(ERROR) << "Could not bind port 8888";
+		throw std::runtime_error("Could not bind port");
 		return;
 	}
 
@@ -51,11 +51,6 @@ void core::Socket::handler(int s) {
 
 	// TODO: Create timeout!
 
-	std::thread h([this, &rx_buffer, &tx_buffer]() {
-		Log(INFO) << "Start handler thread";
-		handle_fn(rx_buffer, tx_buffer);
-	});
-
 	std::thread rx_thread([&connection, &rx_buffer]() {
 		Log(INFO) << "Start rx thread";
 		connection.rx(rx_buffer);
@@ -64,6 +59,11 @@ void core::Socket::handler(int s) {
 	std::thread tx_thread([&connection, &tx_buffer]() {
 		Log(INFO) << "Start tx thread";
 		connection.tx(tx_buffer);
+	});
+
+	std::thread h([this, &rx_buffer, &tx_buffer]() {
+		Log(INFO) << "Start handler thread";
+		handle_fn(rx_buffer, tx_buffer);
 	});
 
 
@@ -95,10 +95,9 @@ void core::Connection::rx(buffer::Buffer<char>& buf) {
 
 	int read_size;
 	while ( (read_size = recv(_socket, buffer, 500, 0)) > 0) {
-		/// rcv_msg.append(buffer, read_size);
-		Log(DEBUG) << "Receaved size: " << read_size;
 		std::vector<char> chunk(std::begin(buffer), std::begin(buffer) + read_size);
-		std::cout << buffer << std::endl;
+		std::string s(chunk.begin(), chunk.end());
+		std::cout << s;
 		buf.push_chunk(chunk);
 	}
 

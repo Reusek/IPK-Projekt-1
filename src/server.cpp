@@ -12,8 +12,9 @@ void core::Server::start() {
 	core::Socket s(f);
 	s.start();
 }
-core::Server::~Server() {
-	// delete socket;
+
+void core::Server::add_endpoint(std::string route, endpoint_fn endpoint) {
+	endpoints.insert({route, endpoint});
 }
 
 void core::Server::handle(
@@ -21,9 +22,11 @@ void core::Server::handle(
 	core::buf_t &tx_buf
 ) {
 	Log(DEBUG) << "Start parsing method";
-	http::Method::Type method = http_manager.parse_method(rx_buf);
-	if (method == http::Method::METHOD_ERROR) {
+	http::MethodType method = http_manager.parse_method(rx_buf);
+	if (method == http::MethodType::METHOD_ERROR) {
 		Log(ERROR) << "Bad core method";
+		auto resp = http::Response::bad_request("Bad http method\n").to_string();
+		tx_buf.push_chunk(std::vector<char>(resp.begin(), resp.end()));
 		return;
 	}
 	Log(DEBUG) << "Done parsing method " << method;
@@ -32,17 +35,42 @@ void core::Server::handle(
 	std::string url = http_manager.parse_url(rx_buf);
 	if (url.length() < 1) {
 		Log(ERROR) << "Bad url";
+		auto resp = http::Response::bad_request("Bad url\n").to_string();
+		tx_buf.push_chunk(std::vector<char>(resp.begin(), resp.end()));
 		return;
 	}
 	Log(DEBUG) << "Done parsing url " << url;
 
 	Log(DEBUG) << "Start parsing version";
-	http::Version::Type version = http_manager.parse_version(rx_buf);
-	if (version == http::Version::Type::VERSION_ERROR) {
+	http::VersionType version = http_manager.parse_version(rx_buf);
+	if (version == http::VersionType::VERSION_ERROR) {
 		Log(ERROR) << "Bad version";
+		auto resp = http::Response::bad_request("Bad http version\n").to_string();
+		tx_buf.push_chunk(std::vector<char>(resp.begin(), resp.end()));
 		return;
 	}
 	Log(DEBUG) << "Done parsing version " << version;
+
+	Log(DEBUG) << "Start parsing headers";
+	auto headers = http_manager.parse_headers(rx_buf);
+	Log(DEBUG) << "Done parsing headers";
+
+	http::Request request = http::Request {
+		.version = version,
+		.method = method,
+		.url = url,
+		.headers = headers,
+	};
+
+	auto endpoint_search = endpoints.find(url);
+	if (endpoint_search != endpoints.end()) {
+		auto resp = endpoint_search->second(request).to_string();
+		tx_buf.push_chunk(std::vector<char>(resp.begin(), resp.end()));
+	} else {
+		Log(INFO) << "Endpoint with url: " << url << "does not exit.";
+		auto resp = http::Response::bad_request("Unknown url\n").to_string();
+		tx_buf.push_chunk(std::vector<char>(resp.begin(), resp.end()));
+	}
 
 	// TODO: Remove this after implementation.
 	(void)(tx_buf);

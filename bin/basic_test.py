@@ -19,5 +19,6 @@ async def tcp_echo_client(message):
 asyncio.run(tcp_echo_client(
 """GET / HTTP/1.1
 Host: developer.mozilla.org
+
 """
 ))
