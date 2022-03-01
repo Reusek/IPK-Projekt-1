@@ -85,6 +85,10 @@ core::Connection::Connection(int _new_socket) {
 }
 
 void core::Connection::tx(buffer::Buffer<char>& buf) {
+	while (true) {
+		auto c = buf.pop_chunk();
+		send(_socket, c.data(), c.size(), 0);
+	}
 	// write(_socket, msg.c_str(), msg.length());
 	(void)(buf);
 }

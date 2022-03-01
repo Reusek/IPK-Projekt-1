@@ -14,9 +14,26 @@ namespace core {
 
 	class Server {
 	public:
-		void add_endpoint(std::string route, endpoint_fn endpoint);
+		Server();
 
 		void set_port(uint16_t p);
+
+		/**
+		 * @brief Add single end point
+		 *
+		 * @param url
+		 * @param fn Endpoint function
+		 */
+		void add_endpoint(std::string url, endpoint_fn fn);
+
+		/**
+		 * @brief Add multiple endpoints
+		 *
+		 * @param endpoints
+		 */
+		void add_endpoints(std::vector<std::tuple<std::string, endpoint_fn>> endpoints);
+
+		void add_periodic_task(u_int32_t timeout);
 
 		void start();
 	private:
@@ -36,6 +53,7 @@ namespace core {
 			core::buf_t rx_buf,
 			core::buf_t tx_buf
 		);
+
 	};
 }
 

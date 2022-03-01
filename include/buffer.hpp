@@ -44,6 +44,20 @@ namespace buffer {
 			return item;
 		}
 
+		std::vector<T> pop_chunk() {
+			std::vector<T> chunk;
+			{
+				std::unique_lock<std::mutex> lock(deque_mutex);
+				condition.wait(lock, [this]() {
+					return !deque.empty() || terminate;
+				});
+
+				chunk.insert(chunk.end(), deque.begin(), deque.end());
+				deque.erase(deque.begin(), deque.end());
+			}
+			return chunk;
+		}
+
 		/**
 		 * @brief Push more items to deque
 		 *
@@ -52,6 +66,7 @@ namespace buffer {
 		void push_chunk(std::vector<T> chunk) {
 			std::unique_lock<std::mutex> lock(deque_mutex);
 			deque.insert(deque.end(), chunk.begin(), chunk.end());
+			condition.notify_one();
 		}
 
 		size_t size() {

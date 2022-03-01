@@ -26,7 +26,7 @@ namespace logger {
 		Log(LevelType level) {
 			msg_level = level;
 			if (true) {
-				operator << (getLabel(level) + " ");
+				operator << (getLabel(level));
 			}
 		}
 
