@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#define LVL INFO
+
 namespace logger {
 
 
@@ -26,7 +28,7 @@ namespace logger {
 		Log(LevelType level) {
 			msg_level = level;
 			if (true) {
-				operator << (getLabel(level));
+				operator << (getLabel(level) + " ");
 			}
 		}
 
@@ -39,10 +41,10 @@ namespace logger {
 
 		template<class T>
 		Log &operator<<(const T &msg) {
-			// if(msg_level >= LOGCFG.level) {
+			if(msg_level >= LVL) {
 				std::cout << msg;
 				opened = true;
-			// }
+			}
 			return *this;
 		}
 	private:

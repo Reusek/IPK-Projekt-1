@@ -46,13 +46,15 @@ namespace core {
 		Socket(handle_function_t handle_function);
 		// ~Socket() = default;
 
-		void start();
+		void start(std::uint16_t p);
 	private:
 		int socket_desc, new_socket;
 		struct sockaddr_in server, client;
 		// pool::Pool<int> *pool;
 		std::unique_ptr<pool::Pool<int>> pool;
 		handle_function_t handle_fn;
+
+		std::uint16_t port;
 
 		void init();
 		void gather_clients();

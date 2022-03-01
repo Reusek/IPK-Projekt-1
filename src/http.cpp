@@ -246,10 +246,6 @@ http::Http::parse_headers(
 			c = rx_buf.pop();
 		}
 
-		// if (rx_buf.peak() == '\n') {
-		// 	rx_buf.pop();
-		// }
-
 		if (rx_buf.peak() == '\r' || rx_buf.peak() == '\n') {
 			rx_buf.pop();
 			return headers;

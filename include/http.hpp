@@ -117,7 +117,7 @@ namespace http {
 			"abcdefghijklmnopqrstuvwxyz"
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			"0123456789"
-			"/&?=";
+			"/&?=-";
 	};
 
 
