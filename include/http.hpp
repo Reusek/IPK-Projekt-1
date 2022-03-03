@@ -24,7 +24,6 @@ namespace http {
 	template <class T>
 	class Parser {
 	public:
-		// Parser() = default;
 		virtual std::string to_string(T &method) = 0;
 		virtual T from_string(std::string &method) = 0;
 	};
@@ -45,9 +44,6 @@ namespace http {
 		 */
 		size_t load_map() {
 			keys = std::make_unique<std::vector<std::string>>(map_to->size());
-			/* keys = std::make_unique<std::vector<std::string>>(
-				new std::vector<std::string>(map->size())
-			); */
 
 			std::transform(
 				map_to->begin(),
@@ -89,9 +85,6 @@ namespace http {
 
 	class Url {
 	public:
-		Url() = default;
-		~Url() = default;
-
 		/**
 		 * @brief Serialize http version
 		 *
@@ -264,21 +257,47 @@ namespace http {
 		std::vector<std::tuple<std::string, std::string>> headers;
 		std::string body;
 
+		/**
+		 * @brief Serialize Response.
+		 *
+		 * @param http_manager
+		 * @return std::string
+		 */
 		std::string to_string(http::Http &http_manager);
 
+		/**
+		 * @brief Create basic 200 response with body
+		 *
+		 * @param body Response body
+		 * @return Response
+		 */
 		static Response ok(std::string body);
+
+		/**
+		 * @brief Create basic bad request response
+		 *
+		 * @param body Response body
+		 * @return Response
+		 */
 		static Response bad_request(std::string body);
 
-		static void init(Response &response) {
-			response.version = HTTP_1_1;
-			response.headers.push_back({ std::string("Access-Control-Allow-Origin"), std::string("*") });
-			response.headers.push_back({ std::string("Content-Type"), std::string("text/html; charset=UTF-8") });
-			response.headers.push_back({ std::string("Date"), gen_time() });
-		};
+		/**
+		 * @brief Init response.
+		 * @note Called before every request creation. To be sure
+		 *       everithing is initialized.
+		 *
+		 * @param response
+		 */
+		static void init(Response &response);
 
-		static void prep(Response &response) {
-			response.headers.push_back({ std::string("Content-Length"), std::to_string(response.body.length()) });
-		}
+		/**
+		 * @brief Preper response to sending.
+		 * @note Called at the end of response creation.
+		 *       Adds needed headers.
+		 *
+		 * @param response
+		 */
+		static void prep(Response &response);
 	};
 }
 

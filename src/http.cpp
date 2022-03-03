@@ -296,3 +296,14 @@ http::Response http::Response::bad_request(std::string body) {
 
 	return resp;
 }
+
+void http::Response::init(Response &response) {
+	response.version = HTTP_1_1;
+	response.headers.push_back({ std::string("Access-Control-Allow-Origin"), std::string("*") });
+	response.headers.push_back({ std::string("Content-Type"), std::string("text/html; charset=UTF-8") });
+	response.headers.push_back({ std::string("Date"), gen_time() });
+};
+
+void http::Response::prep(Response &response) {
+	response.headers.push_back({ std::string("Content-Length"), std::to_string(response.body.length()) });
+}
