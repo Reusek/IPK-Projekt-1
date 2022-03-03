@@ -21,6 +21,11 @@
 namespace http {
 	size_t longest(std::vector<std::string> &a);
 
+	/**
+	 * @brief Basic parser interface.
+	 *
+	 * @tparam T Serialize and Deserialize type.
+	 */
 	template <class T>
 	class Parser {
 	public:
@@ -28,6 +33,11 @@ namespace http {
 		virtual T from_string(std::string &method) = 0;
 	};
 
+	/**
+	 * @brief HashMap parser interface.
+	 *
+	 * @tparam T Serialize and Deserialize type.
+	 */
 	template <class T>
 	class MapParser {
 	public:
@@ -78,7 +88,20 @@ namespace http {
 
 		Method();
 
+		/**
+		 * @brief Serialize http method.
+		 *
+		 * @param version
+		 * @return std::string
+		 */
 		std::string to_string(MethodType &method) override;
+
+		/**
+		 * @brief Deserialize http method.
+		 *
+		 * @param version
+		 * @return Type
+		 */
 		MethodType from_string(std::string &method) override;
 	};
 
@@ -86,7 +109,7 @@ namespace http {
 	class Url {
 	public:
 		/**
-		 * @brief Serialize http version
+		 * @brief Serialize http url.
 		 *
 		 * @param version
 		 * @return std::string
@@ -94,7 +117,7 @@ namespace http {
 		static std::string to_string(std::string &path);
 
 		/**
-		 * @brief Deserialize http version
+		 * @brief Deserialize http url.
 		 *
 		 * @param version
 		 * @return Type
@@ -147,10 +170,6 @@ namespace http {
 		size_t max_len;
 	};
 
-	enum HeaderType {
-		CORS
-	};
-
 	class Header :
 		public Parser<std::tuple<std::string, std::string>>
 	{
@@ -199,7 +218,7 @@ namespace http {
 		Status();
 
 		/**
-		 * @brief Serialize http version
+		 * @brief Serialize http status.
 		 *
 		 * @param version
 		 * @return std::string
@@ -207,7 +226,7 @@ namespace http {
 		std::string to_string(StatusType &type) override;
 
 		/**
-		 * @brief Deserialize http version
+		 * @brief Deserialize http status.
 		 *
 		 * @param version
 		 * @return Type
@@ -350,7 +369,12 @@ namespace http {
 		 *
 		 * @param response
 		 */
-		static void init(Response &response);
+		static void init(Response &response) {
+			response.version = HTTP_1_1;
+			response.headers.push_back({ std::string("Access-Control-Allow-Origin"), std::string("*") });
+			response.headers.push_back({ std::string("Content-Type"), std::string("text/html; charset=UTF-8") });
+			response.headers.push_back({ std::string("Date"), http::gen_time() });
+		}
 
 		/**
 		 * @brief Preper response to sending.
@@ -359,7 +383,9 @@ namespace http {
 		 *
 		 * @param response
 		 */
-		static void prep(Response &response);
+		static void prep(Response &response) {
+			response.headers.push_back({ std::string("Content-Length"), std::to_string(response.body.length()) });
+		}
 	};
 }
 
