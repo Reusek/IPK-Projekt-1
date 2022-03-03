@@ -226,15 +226,77 @@ namespace http {
 
 	class Http {
 	public:
+
+		/**
+		 * \addtogroup Parsers
+		 * @{
+		 */
+
+		/**
+		 * @brief HTTP Method parser.
+		 *
+		 * @param rx_buf Receive buffer.
+		 * @return http::MethodType
+		 */
 		http::MethodType parse_method(core::buf_t rx_buf);
+
+		/**
+		 * @brief HTTP URL Parser
+		 *
+		 * @param rx_buf Receive buffer.
+		 * @return std::string
+		 */
 		std::string parse_url(core::buf_t rx_buf);
+
+		/**
+		 * @brief HTTP Version parser.
+		 *
+		 * @param rx_buf Receive buffer.
+		 * @return http::VersionType
+		 */
 		http::VersionType parse_version(core::buf_t rx_buf);
+
+		/**
+		 * @brief HTTP Headers parser.
+		 * @note Parse all headers to vector.
+		 *
+		 * @param rx_buf Receive buffer.
+		 * @return std::vector<std::tuple<std::string, std::string>>
+		 */
 		std::vector<std::tuple<std::string, std::string>> parse_headers(core::buf_t rx_buf);
-	// private:
+
+		/**
+		 * @}
+		 */
+
+		/**
+		 * \addtogroup Managers
+		 * @{
+		 */
+
+		/**
+		 * @brief HTTP Method manager.
+		 */
 		http::Method method_manager;
+
+		/**
+		 * @brief HTTP URL manager.
+		 */
 		http::Url url_manager;
+
+		/**
+		 * @brief HTTP Version manager.
+		 */
 		http::Version version_manager;
+
+		/**
+		 * @brief HTTP Header manager.
+		 */
 		http::Header header_manager;
+
+		/**
+		 * @}
+		 */
 	};
 
 	/**
