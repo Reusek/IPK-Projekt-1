@@ -127,10 +127,10 @@ namespace core {
 			Log(DEBUG) << "Done parsing headers";
 
 			http::Request request = http::Request {
-				.version = version,
-				.method = method,
-				.url = url,
-				.headers = headers,
+				version,
+				method,
+				url,
+				headers,
 			};
 
 			Log(INFO) << "Request to: " << url;
